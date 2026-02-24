@@ -52,9 +52,17 @@ services:
         define('WP_CACHE', true);
         define('WP_HOME', 'https://${DOMAIN}');
         define('WP_SITEURL', 'https://${DOMAIN}');
+        /** Trust Cloudflare + Traefik reverse proxy */
         if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
           $_SERVER['HTTPS'] = 'on';
         }
+        if (isset($_SERVER['HTTP_CF_VISITOR'])) {
+          $cf = json_decode($_SERVER['HTTP_CF_VISITOR'], true);
+          if (isset($cf['scheme']) && $cf['scheme'] === 'https') {
+            $_SERVER['HTTPS'] = 'on';
+          }
+        }
+        define('FORCE_SSL_ADMIN', true);
     volumes:
       - wordpress_data:/var/www/html
     networks:
