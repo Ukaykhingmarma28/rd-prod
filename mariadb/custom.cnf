@@ -1,0 +1,33 @@
+[mysqld]
+# ── InnoDB — use ~60% of DB container RAM (2GB * 0.6 = ~1.2GB) ──
+innodb_buffer_pool_size        = 1200M
+innodb_buffer_pool_instances   = 4
+innodb_log_file_size           = 256M
+innodb_log_buffer_size         = 64M
+innodb_flush_log_at_trx_commit = 2      # slight perf boost (safe for WooCommerce)
+innodb_flush_method            = O_DIRECT
+innodb_file_per_table          = 1
+innodb_read_io_threads         = 4
+innodb_write_io_threads        = 4
+
+# ── Connections ──────────────────────────────────────────────────
+max_connections                = 200
+thread_cache_size              = 20
+table_open_cache               = 4000
+
+# ── Query cache (disabled in MariaDB 10.1.7+ by default, keep off)
+query_cache_type               = 0
+query_cache_size               = 0
+
+# ── Temp tables ──────────────────────────────────────────────────
+tmp_table_size                 = 128M
+max_heap_table_size            = 128M
+
+# ── Slow query log ───────────────────────────────────────────────
+slow_query_log                 = 1
+slow_query_log_file            = /var/lib/mysql/slow.log
+long_query_time                = 1
+
+# ── Character set ────────────────────────────────────────────────
+character_set_server           = utf8mb4
+collation_server               = utf8mb4_unicode_ci
