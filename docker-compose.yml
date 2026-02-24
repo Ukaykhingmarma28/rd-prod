@@ -1,9 +1,6 @@
 version: "3.8"
 
 services:
-  # ─────────────────────────────────────────
-  # MariaDB — 2 vCPU / 2GB RAM
-  # ─────────────────────────────────────────
   mariadb:
     image: mariadb:11
     restart: unless-stopped
@@ -26,9 +23,6 @@ services:
           cpus: "0.5"
           memory: 512M
 
-  # ─────────────────────────────────────────
-  # Redis — 0.5 vCPU / 512MB RAM
-  # ─────────────────────────────────────────
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -46,9 +40,6 @@ services:
           cpus: "0.1"
           memory: 128M
 
-  # ─────────────────────────────────────────
-  # WordPress PHP-FPM — 1 vCPU / 2GB RAM
-  # ─────────────────────────────────────────
   wordpress:
     image: wordpress:6-fpm-alpine
     restart: unless-stopped
@@ -84,9 +75,6 @@ services:
           cpus: "0.25"
           memory: 256M
 
-  # ─────────────────────────────────────────
-  # Nginx — 0.5 vCPU / 512MB RAM
-  # ─────────────────────────────────────────
   nginx:
     image: nginx:1.25-alpine
     restart: unless-stopped
@@ -94,8 +82,8 @@ services:
       - wordpress
     volumes:
       - wordpress_data:/var/www/html:ro
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - nginx_cache:/var/cache/nginx/fastcgi
       - nginx_logs:/var/log/nginx
     networks:
