@@ -1,9 +1,6 @@
 version: "3.8"
 
 services:
-  # ─────────────────────────────────────────
-  # MariaDB
-  # ─────────────────────────────────────────
   mariadb:
     image: mariadb:11
     restart: unless-stopped
@@ -17,9 +14,6 @@ services:
     networks:
       - wordpress_net
 
-  # ─────────────────────────────────────────
-  # Redis
-  # ─────────────────────────────────────────
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -29,9 +23,6 @@ services:
     networks:
       - wordpress_net
 
-  # ─────────────────────────────────────────
-  # WordPress (PHP-FPM)
-  # ─────────────────────────────────────────
   wordpress:
     image: wordpress:6-fpm-alpine
     restart: unless-stopped
@@ -52,16 +43,11 @@ services:
         define('WP_CACHE', true);
         define('WP_HOME', 'https://${DOMAIN}');
         define('WP_SITEURL', 'https://${DOMAIN}');
-        define('FORCE_SSL_ADMIN', true);
-        $_SERVER['HTTPS'] = 'on';
     volumes:
       - wordpress_data:/var/www/html
     networks:
       - wordpress_net
 
-  # ─────────────────────────────────────────
-  # Nginx
-  # ─────────────────────────────────────────
   nginx:
     image: nginx:1.25-alpine
     restart: unless-stopped
@@ -77,22 +63,15 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.wordpress.rule=Host(`${DOMAIN}`)"
-        - "traefik.http.routers.wordpress.entrypoints=websecure"
-        - "traefik.http.routers.wordpress.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.wordpress.entrypoints=web"
         - "traefik.http.services.wordpress.loadbalancer.server.port=80"
 
-# ─────────────────────────────────────────
-# Volumes
-# ─────────────────────────────────────────
 volumes:
   mariadb_data:
   redis_data:
   wordpress_data:
   nginx_logs:
 
-# ─────────────────────────────────────────
-# Networks
-# ─────────────────────────────────────────
 networks:
   wordpress_net:
     driver: overlay
