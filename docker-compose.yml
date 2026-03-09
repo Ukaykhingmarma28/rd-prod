@@ -18,15 +18,15 @@ services:
       resources:
         limits:
           cpus: "2"
-          memory: 2048M
+          memory: 5120M
         reservations:
           cpus: "0.5"
-          memory: 512M
+          memory: 1024M
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --requirepass ${REDIS_PASSWORD} --maxmemory 512mb --maxmemory-policy allkeys-lru
+    command: redis-server --requirepass ${REDIS_PASSWORD} --maxmemory 1280mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     networks:
@@ -35,10 +35,10 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: 512M
+          memory: 1536M
         reservations:
           cpus: "0.1"
-          memory: 128M
+          memory: 256M
 
   wordpress:
     image: wordpress:6-fpm-alpine
@@ -69,11 +69,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1"
-          memory: 2048M
+          cpus: "2"
+          memory: 4096M
         reservations:
-          cpus: "0.25"
-          memory: 256M
+          cpus: "0.5"
+          memory: 512M
 
   nginx:
     image: nginx:1.25-alpine
@@ -92,10 +92,10 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: 512M
+          memory: 1024M
         reservations:
           cpus: "0.1"
-          memory: 64M
+          memory: 128M
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.wordpress.rule=Host(`${DOMAIN}`)"
